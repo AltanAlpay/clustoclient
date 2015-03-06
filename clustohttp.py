@@ -83,6 +83,28 @@ class ClustoProxy(object):
             raise LookupError('%s does not exist!' % name)
         raise Exception(response)
 
+    def get_pools(self):
+        '''
+        Gets all pools
+
+        Returns EntityProxy of the pool objects
+        '''
+        status, headers, response = self.request('GET', '/pool')
+        if status != 200:
+            raise Exception(response)
+        return [EntityProxy(self, pool, cache=pool) for pool in json.loads(response)]
+
+    def get_servers(self):
+        '''
+        Gets all servers
+
+        Returns EntityProxy of the server objects
+        '''
+        status, headers, response = self.request('GET', '/server')
+        if status != 200:
+            raise Exception(response)
+        return [EntityProxy(self, server, cache=server) for server in json.loads(response)]
+
     def get_from_pools(self, pools, clusto_types=None):
         url = '/query/get_from_pools?pools=%s' % ','.join(pools)
         if clusto_types:
